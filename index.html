@@ -1,1 +1,445 @@
-<!DOCTYPE html>\n<html lang="en">\n<head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>Water Notification Application</title>\n    <script>\n        let reminderInterval;\n        let waterReminder;\n        let alertTimer;\n        let completed = false;\n\n        function startReminder() {\n            const now = new Date();\n            const currentHour = now.getHours();\n            if (currentHour < 9 || currentHour > 21) {\n                alert('Notifications can only be received between 9 AM and 9 PM.');\n                return;\n            }\n\n            waterReminder = setInterval(() => {\n                if (!completed) {\n                    alert('Time to drink water!');\n                }\n            }, 5 * 60 * 1000); // every 5 minutes\n\n            alertTimer = setTimeout(() => {\n                alert('This alert runs every 45 minutes.');\n            }, 45 * 60 * 1000); // after 45 minutes\n        }\n\n        function completeTask() {\n            completed = true;\n            clearInterval(waterReminder);\n            clearTimeout(alertTimer);\n            alert('Great job! You have completed your water reminder task.');\n        }\n\n        window.onload = startReminder;\n    </script>\n</head>\n<body>\n    <h1>Welcome to the Water Notification Application</h1>\n    <button onclick="completeTask()">Completed</button>\n</body>\n</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Water Notification Application</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+        
+        .status-section {
+            background: #f0f4ff;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .status-item {
+            margin: 15px 0;
+            font-size: 18px;
+        }
+        
+        .status-label {
+            color: #666;
+            font-weight: 600;
+        }
+        
+        .status-value {
+            color: #667eea;
+            font-weight: bold;
+            font-size: 24px;
+            margin-top: 5px;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .start-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .start-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .start-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .completed-btn {
+            background: #4caf50;
+            color: white;
+        }
+        
+        .completed-btn:hover:not(:disabled) {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(76, 175, 80, 0.4);
+        }
+        
+        .completed-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .stop-btn {
+            background: #f44336;
+            color: white;
+        }
+        
+        .stop-btn:hover:not(:disabled) {
+            background: #da190b;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(244, 67, 54, 0.4);
+        }
+        
+        .stop-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .info-section {
+            background: #fffbea;
+            border-left: 4px solid #ffc107;
+            border-radius: 5px;
+            padding: 15px;
+            text-align: left;
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .info-section h3 {
+            color: #ff9800;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .alert-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #ff9800;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            max-width: 350px;
+            animation: slideIn 0.5s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .outside-hours {
+            background: #ffebee;
+            border: 2px solid #f44336;
+            border-radius: 10px;
+            padding: 15px;
+            color: #c62828;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💧 Water Reminder</h1>
+        <p class="subtitle">Stay hydrated throughout the day!</p>
+        
+        <div class="status-section">
+            <div class="status-item">
+                <div class="status-label">Current Time</div>
+                <div class="status-value" id="currentTime">--:--</div>
+            </div>
+            <div class="status-item">
+                <div class="status-label">Status</div>
+                <div class="status-value" id="statusDisplay">Not Started</div>
+            </div>
+            <div class="status-item">
+                <div class="status-label">Reminders Sent</div>
+                <div class="status-value" id="reminderCount">0</div>
+            </div>
+            <div class="status-item">
+                <div class="status-label">Next Alert In</div>
+                <div class="status-value" id="nextAlert">--:--</div>
+            </div>
+        </div>
+        
+        <div class="button-group">
+            <button class="start-btn" id="startBtn" onclick="startReminder()">Start Reminder</button>
+            <button class="stop-btn" id="stopBtn" onclick="stopReminder()" disabled>Stop</button>
+        </div>
+        
+        <button class="completed-btn" id="completedBtn" onclick="markCompleted()" disabled style="width: 100%; margin-bottom: 20px;">✓ Completed</button>
+        
+        <div class="info-section">
+            <h3>ℹ️ How it works</h3>
+            <ul style="margin-left: 20px;">
+                <li>Reminders run between 9 AM and 9 PM</li>
+                <li>Initial alert every 45 minutes</li>
+                <li>If not completed, alerts repeat every 5 minutes</li>
+                <li>Press "Completed" to dismiss the current cycle</li>
+                <li>Press "Stop" to end the reminder service</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        let mainInterval;
+        let alertInterval;
+        let countdownInterval;
+        let isActive = false;
+        let remindersSent = 0;
+        let nextAlertTime = 0;
+        let hasNotCompletedAlert = false;
+
+        function getCurrentTime() {
+            return new Date();
+        }
+
+        function updateClock() {
+            const now = getCurrentTime();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('currentTime').textContent = `${hours}:${minutes}`;
+        }
+
+        function isWithinWorkingHours() {
+            const now = getCurrentTime();
+            const hour = now.getHours();
+            return hour >= 9 && hour < 21;
+        }
+
+        function showNotification(message, duration = 8000) {
+            const notification = document.createElement('div');
+            notification.className = 'alert-notification';
+            notification.innerHTML = `
+                <strong>🔔 Water Reminder</strong><br>
+                ${message}
+            `;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideIn 0.5s ease reverse';
+                setTimeout(() => notification.remove(), 500);
+            }, duration);
+        }
+
+        function playSound() {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = 800;
+            oscillator.type = 'sine';
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.5);
+        }
+
+        function triggerAlert() {
+            if (!isWithinWorkingHours()) {
+                stopReminder();
+                return;
+            }
+
+            hasNotCompletedAlert = true;
+            remindersSent++;
+            document.getElementById('reminderCount').textContent = remindersSent;
+            
+            showNotification('Time to drink water! 💧');
+            playSound();
+            
+            if (Notification.permission === 'granted') {
+                new Notification('Drink Water!', {
+                    body: 'Time to drink water and stay hydrated!',
+                    icon: '💧'
+                });
+            }
+        }
+
+        function startMainReminder() {
+            nextAlertTime = 45 * 60; // 45 minutes
+            
+            mainInterval = setInterval(() => {
+                if (!isWithinWorkingHours()) {
+                    stopReminder();
+                    showNotification('Notifications stopped - Outside working hours (9 AM - 9 PM)', 5000);
+                    return;
+                }
+
+                if (!hasNotCompletedAlert) {
+                    triggerAlert();
+                }
+            }, 45 * 60 * 1000); // 45 minutes
+        }
+
+        function startFollowUpAlerts() {
+            if (alertInterval) clearInterval(alertInterval);
+            
+            alertInterval = setInterval(() => {
+                if (!isWithinWorkingHours()) {
+                    stopReminder();
+                    return;
+                }
+
+                if (hasNotCompletedAlert) {
+                    triggerAlert();
+                }
+            }, 5 * 60 * 1000); // 5 minutes
+        }
+
+        function updateCountdown() {
+            if (countdownInterval) clearInterval(countdownInterval);
+            
+            countdownInterval = setInterval(() => {
+                nextAlertTime--;
+                
+                if (nextAlertTime <= 0) {
+                    if (!hasNotCompletedAlert) {
+                        nextAlertTime = 45 * 60;
+                    } else {
+                        nextAlertTime = 5 * 60;
+                    }
+                }
+                
+                const minutes = Math.floor(nextAlertTime / 60);
+                const seconds = nextAlertTime % 60;
+                document.getElementById('nextAlert').textContent = 
+                    `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function startReminder() {
+            if (!isWithinWorkingHours()) {
+                showNotification('⛔ Notifications can only be started between 9 AM and 9 PM', 5000);
+                return;
+            }
+
+            isActive = true;
+            document.getElementById('startBtn').disabled = true;
+            document.getElementById('stopBtn').disabled = false;
+            document.getElementById('completedBtn').disabled = false;
+            document.getElementById('statusDisplay').textContent = '🟢 Running';
+            document.getElementById('statusDisplay').style.color = '#4caf50';
+            
+            showNotification('Reminder service started! 🎉', 3000);
+            
+            startMainReminder();
+            updateCountdown();
+            
+            requestPermission();
+        }
+
+        function markCompleted() {
+            if (!isActive) return;
+
+            hasNotCompletedAlert = false;
+            showNotification('Great! You drank water. Next alert in 45 minutes. 💪', 4000);
+            document.getElementById('reminderCount').textContent = remindersSent;
+            
+            nextAlertTime = 45 * 60;
+            clearInterval(alertInterval);
+        }
+
+        function stopReminder() {
+            isActive = false;
+            hasNotCompletedAlert = false;
+            remindersSent = 0;
+            
+            clearInterval(mainInterval);
+            clearInterval(alertInterval);
+            clearInterval(countdownInterval);
+            
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('stopBtn').disabled = true;
+            document.getElementById('completedBtn').disabled = true;
+            document.getElementById('statusDisplay').textContent = 'Stopped';
+            document.getElementById('statusDisplay').style.color = '#f44336';
+            document.getElementById('reminderCount').textContent = '0';
+            document.getElementById('nextAlert').textContent = '--:--';
+            
+            showNotification('Reminder service stopped. 🛑', 3000);
+        }
+
+        function requestPermission() {
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission();
+            }
+        }
+
+        // Initialize
+        updateClock();
+        setInterval(updateClock, 1000);
+        
+        // Check if app should stop due to time
+        setInterval(() => {
+            if (isActive && !isWithinWorkingHours()) {
+                stopReminder();
+                showNotification('⛔ Notifications stopped - Outside working hours', 5000);
+            }
+        }, 60000); // Check every minute
+
+        // Load state from localStorage
+        window.addEventListener('load', () => {
+            const savedState = localStorage.getItem('waterReminderActive');
+            if (savedState === 'true' && isWithinWorkingHours()) {
+                startReminder();
+            }
+        });
+
+        // Save state to localStorage
+        window.addEventListener('beforeunload', () => {
+            localStorage.setItem('waterReminderActive', isActive.toString());
+        });
+    </script>
+</body>
+</html>

@@ -1,12 +1,1 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Water Notification Application</title>
-</head>
-<body>
-    <h1>Welcome to the Water Notification Application</h1>
-    <p>This application helps remind you to drink water regularly!</p>
-</body>
-</html>
+<!DOCTYPE html>\n<html lang="en">\n<head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>Water Notification Application</title>\n    <script>\n        let reminderInterval;\n        let waterReminder;\n        let alertTimer;\n        let completed = false;\n\n        function startReminder() {\n            const now = new Date();\n            const currentHour = now.getHours();\n            if (currentHour < 9 || currentHour > 21) {\n                alert('Notifications can only be received between 9 AM and 9 PM.');\n                return;\n            }\n\n            waterReminder = setInterval(() => {\n                if (!completed) {\n                    alert('Time to drink water!');\n                }\n            }, 5 * 60 * 1000); // every 5 minutes\n\n            alertTimer = setTimeout(() => {\n                alert('This alert runs every 45 minutes.');\n            }, 45 * 60 * 1000); // after 45 minutes\n        }\n\n        function completeTask() {\n            completed = true;\n            clearInterval(waterReminder);\n            clearTimeout(alertTimer);\n            alert('Great job! You have completed your water reminder task.');\n        }\n\n        window.onload = startReminder;\n    </script>\n</head>\n<body>\n    <h1>Welcome to the Water Notification Application</h1>\n    <button onclick="completeTask()">Completed</button>\n</body>\n</html>
